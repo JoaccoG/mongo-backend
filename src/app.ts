@@ -6,7 +6,7 @@ import authRouter from './api/auth/auth-router.js';
 const app = express();
 
 app.get('/', (_req, res) => {
-  res.json('Server ON');
+  res.json('Server is now ON');
 });
 
 app.use(cors());
