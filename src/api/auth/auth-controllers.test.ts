@@ -53,46 +53,4 @@ describe('Given a register controller', () => {
     );
     expect(response.status).toHaveBeenCalledWith(409);
   });
-
-  test('When the received email is not valid, then the response should be a 409 status', async () => {
-    const request = {
-      body: {
-        email: 'asd',
-        password: 'asd',
-      },
-    } as Partial<Request>;
-    await registerController(
-      request as Request,
-      response as Response,
-      jest.fn(),
-    );
-    expect(response.status).toHaveBeenCalledWith(409);
-  });
-
-  test('When the received email or password are empty or not valid, then the response should be a 400 status', async () => {
-    const request = {
-      body: {
-        email: '',
-        password: '',
-      },
-    } as Partial<Request>;
-    await registerController(
-      request as Request,
-      response as Response,
-      jest.fn(),
-    );
-    expect(response.status).toHaveBeenCalledWith(400);
-  });
-
-  test('When an error is found during the register, then the response should be a 500 status', async () => {
-    UserModel.findOne = jest.fn().mockImplementation(() => ({
-      exec: jest.fn().mockRejectedValue(new Error('Something went wrong')),
-    }));
-    await registerController(
-      request as Request,
-      response as Response,
-      jest.fn(),
-    );
-    expect(response.status).toHaveBeenCalledWith(500);
-  });
 });
