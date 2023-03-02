@@ -1,14 +1,11 @@
 import { Request, Response } from 'express';
-import { User, UserModel } from '../users/users-model';
+import { UserModel } from '../users/users-model';
 import { registerController } from './auth-controllers';
-import crypto from 'node:crypto';
 import { encryptPassword } from './auth-utils';
 import dotenv from 'dotenv';
 dotenv.config();
 
 describe('Given a register controller', () => {
-  // Mockear crypto.randomUUID
-  crypto.randomUUID = jest.fn().mockReturnValue('id-0');
   // Mockear la request con el body que te manda el usuario (un user con email y password normales)
   const request = {
     body: {
@@ -16,14 +13,15 @@ describe('Given a register controller', () => {
       password: 'mockedPassword',
     },
   } as Partial<Request>;
+
   // Mockear la response
   const response = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn(),
   } as Partial<Response>;
+
   // Mockear el usuario que espero que sea llamado con UserModel.create()
-  const newUser: User = {
-    id: crypto.randomUUID(),
+  const newUser = {
     email: 'mock@email.com',
     password: encryptPassword('mockedPassword'),
   };
