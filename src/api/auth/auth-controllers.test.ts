@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { User, UserModel } from '../users/user-model';
+import { User, UserModel } from '../users/users-model';
 import { registerController } from './auth-controllers';
 import crypto from 'node:crypto';
 import { encryptPassword } from './auth-utils';
