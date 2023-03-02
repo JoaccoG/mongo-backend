@@ -1,16 +1,13 @@
 import crypto from 'node:crypto';
 import { RequestHandler } from 'express';
-import { User, UserModel } from './auth-schema.js';
-import { encryptPassword } from './auth-utils.js';
-
-export interface LoginResponse {
-  accessToken: string;
-}
+import { UserModel } from '../users/user-model.js';
+import { encryptPassword, generateJWTToken } from './auth-utils.js';
+import { AuthRequest, LoginResponse } from './auth-types.js';
 
 export const registerController: RequestHandler<
   unknown,
   unknown,
-  User
+  AuthRequest
 > = async (req, res) => {
   const { email, password } = req.body;
   const existingUser = await UserModel.findOne({ email }).exec();
@@ -26,4 +23,27 @@ export const registerController: RequestHandler<
 
   await UserModel.create(newUser);
   return res.status(201).json({ msg: 'New user successfully created!' });
+};
+
+export const loginController: RequestHandler<
+  unknown,
+  LoginResponse,
+  AuthRequest
+> = async (req, res) => {
+  const { email, password } = req.body;
+  const filterUser = {
+    email,
+    password: encryptPassword(password),
+  };
+
+  const existingUser = await UserModel.find(filterUser).exec();
+
+  if (existingUser === null) {
+    return res.sendStatus(404);
+  }
+
+  const tokenJWT = generateJWTToken(email);
+  return res.status(201).json({
+    accessToken: tokenJWT,
+  });
 };
