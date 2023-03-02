@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import apiRouter from './api/api-router.js';
-import authRouter from './api/auth/auth-router.js';
+import { authRouter } from './api/auth/auth-router.js';
 import { errorHandler } from './utils/error-handler.js';
 
 const app = express();
