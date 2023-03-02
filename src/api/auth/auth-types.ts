@@ -1,4 +1,4 @@
-import { User } from '../users/user-model.js';
+import { User } from '../users/users-model.js';
 
 export interface UserLocalsAuthInfo {
   email: string;
