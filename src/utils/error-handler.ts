@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ValidationError } from 'express-validation';
-import log from '../logger';
+import log from '../logger.js';
 
 export const errorHandler = (
   err: Error,
@@ -9,6 +9,7 @@ export const errorHandler = (
   _next: NextFunction,
 ) => {
   if (err instanceof ValidationError) {
+    log.error(err);
     return res.status(err.statusCode).json(err);
   }
 
