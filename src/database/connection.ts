@@ -1,7 +1,15 @@
 import mongoose from 'mongoose';
 
-const connectDB = (urlBD: string) =>
+export const connectDB = (urlBD: string) =>
   new Promise((resolve, reject) => {
+    mongoose.set('strictQuery', false);
+    mongoose.set('debug', true);
+    mongoose.set('toJSON', {
+      virtuals: true,
+      transform(_doc, ret) {
+        delete ret.__v;
+      },
+    });
     mongoose.connect(urlBD, error => {
       if (error) {
         reject(new Error('Error connecting to database'));
@@ -10,5 +18,3 @@ const connectDB = (urlBD: string) =>
       resolve(true);
     });
   });
-
-export default connectDB;
