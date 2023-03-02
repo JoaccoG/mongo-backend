@@ -1,8 +1,7 @@
-import crypto from 'node:crypto';
 import { RequestHandler } from 'express';
 import { UserModel } from '../users/users-model.js';
 import { encryptPassword, generateJWTToken } from './auth-utils.js';
-import { AuthRequest, LoginResponse } from './auth-types.js';
+import { AuthRequest, LoginResponse } from '../../types/types.js';
 
 export const registerController: RequestHandler<
   unknown,
@@ -16,7 +15,6 @@ export const registerController: RequestHandler<
   }
 
   const newUser = {
-    id: crypto.randomUUID(),
     email,
     password: encryptPassword(password),
   };
