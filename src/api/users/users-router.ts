@@ -1,10 +1,12 @@
 import express from 'express';
-import { validate } from 'express-validation';
+import {
+  addFollowersController,
+  getUserByIdController,
+  getUsersController,
+} from './users-controllers.js';
 
 export const usersRouter = express.Router();
 
-usersRouter.use(validate({}));
-
-usersRouter.route('/:id').get();
-usersRouter.route('/').post();
-usersRouter.route('/users/:id/followers/:idFollower').patch();
+usersRouter.route('/').get(getUsersController).post();
+usersRouter.route('/:id').get(getUserByIdController);
+usersRouter.route('/:id/followers/:idFollower').patch(addFollowersController);
