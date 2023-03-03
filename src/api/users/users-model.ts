@@ -1,15 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
 
-export interface Follower {
-  id: string;
-  name: string;
-}
-
 export interface User {
   email: string;
   password: string;
   name: string;
-  followers: Follower[];
+  followers: User[];
 }
 
 const userSchema = new Schema<User>({
