@@ -25,7 +25,9 @@ export const getUserByIdController: RequestHandler<UserQueryId> = async (
   res,
 ) => {
   const { id } = req.params;
-  const user = await UserModel.findById({ _id: id }).exec();
+  const user = await UserModel.findById({ _id: id })
+    .populate('followers', '-__v')
+    .exec();
   if (user !== null) {
     return res.status(200).json(user);
   }
@@ -39,7 +41,6 @@ export const addFollowersController: RequestHandler<{
   idFollower: string;
 }> = async (req, res) => {
   const { id, idFollower } = req.params;
-
   if (id === idFollower) {
     return res
       .status(400)
@@ -48,25 +49,23 @@ export const addFollowersController: RequestHandler<{
 
   const user = await UserModel.findById({ _id: id }).exec();
   const follower = await UserModel.findById({ _id: idFollower }).exec();
-
-  if (user === null) {
-    return res.status(404).json({ msg: 'User to update not found' });
-  }
-
-  if (follower === null) {
-    return res.status(404).json({ msg: 'Favorite user not found' });
+  if (user === null || follower === null) {
+    return res
+      .status(404)
+      .json({ msg: 'User to update or favorite user not found' });
   }
 
   if (user !== null && follower !== null) {
-    const followerDb = await UserModel.updateOne(
+    if (user.followers.includes(idFollower as unknown as User)) {
+      return res
+        .status(409)
+        .json({ msg: `${follower} already follows ${user}` });
+    }
+
+    await UserModel.updateOne(
       { _id: id },
       { $push: { followers: idFollower } },
     );
-
-    if (followerDb.modifiedCount === 0) {
-      return res.status(400).json({ msg: 'The user is already follower' });
-    }
-
     return res.status(201).json({ msg: 'Favorites list successfully updated' });
   }
 
